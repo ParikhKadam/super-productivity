@@ -1,5 +1,6 @@
 {
   "APP": {
+    "A_BROWSER_WARNING": "We are sorry, but the app is not optimized to run in this browser. Please consider using a chromium based browser or downloading the electron version of the app",
     "B_INSTALL": {
       "IGNORE": "Ignore",
       "INSTALL": "Install",
@@ -19,6 +20,7 @@
   "CONFIRM": {
     "AUTO_FIX": "Your data seems to be damaged. Do you want to try to automatically fix it? This might result in partial data loss.",
     "DELETE_STRAY_BACKUP": "Do you want to delete the back to avoid seeing this dialog?",
+    "RELOAD_AFTER_IDB_ERROR": "Cannot access database :( Possible causes are an app update to the app in the background or low disk space. Press OK to reload the app (might require manual restarting the app on some platforms).",
     "RESTORE_FILE_BACKUP": "There seems to be NO DATA, but there are backups available at \"{{dir}}\". Do you want to restore the latest backup from {{from}}?",
     "RESTORE_FILE_BACKUP_ANDROID": "There seems to be NO DATA, but there is a backup available. Do you want to load it?",
     "RESTORE_STRAY_BACKUP": "During last sync there might have been some error. Do you want to restore the last backup?"
@@ -107,14 +109,7 @@
       "S": {
         "CALENDAR_NOT_FOUND": "CalDav: Calendar \"{{calendarName}}\" not found",
         "CALENDAR_READ_ONLY": "CalDav: Calendar \"{{calendarName}}\" is readonly",
-        "ERR_NETWORK": "CalDav: Request failed because of a client side network error",
-        "ERR_NOT_CONFIGURED": "CalDav: Not properly configured",
-        "IMPORTED_MULTIPLE_ISSUES": "CalDav: Imported {{issuesLength}} new issues from git to backlog",
-        "IMPORTED_SINGLE_ISSUE": "CalDav: Imported issue \"{{issueText}}\" from to backlog",
-        "ISSUE_NOT_FOUND": "CalDav: Todo \"{{issueId}}\" seems to be deleted on server.",
-        "ISSUE_NO_UPDATE_REQUIRED": "CalDav: No update required.",
-        "ISSUE_UPDATE": "Caldav: Uodated data for \"{{issueText}}\"",
-        "POLLING": "Caldav: Polling changes for todos"
+        "ISSUE_NOT_FOUND": "CalDav: Todo \"{{issueId}}\" seems to be deleted on server."
       }
     },
     "CONFIG": {
@@ -160,19 +155,7 @@
         "WRITE_A_COMMENT": "Write a comment"
       },
       "S": {
-        "ERR_NETWORK": "GitHub: Request failed because of a client side network error",
-        "ERR_NOT_CONFIGURED": "GitHub: Is not properly configured",
-        "ERR_UNKNOWN": "GitHub: Unknown error {{statusCode}} {{errorMsg}}. Api Rate limit exceeded?",
-        "IMPORTED_MULTIPLE_ISSUES": "GitHub: Imported {{issuesLength}} new issues from git to backlog",
-        "IMPORTED_SINGLE_ISSUE": "GitHub: Imported issue \"{{issueText}}\" from git to backlog",
-        "ISSUE_DELETED_OR_CLOSED": "GitHub: Issue \"{{issueText}}\" seems to be deleted or closed on git",
-        "ISSUE_NO_UPDATE_REQUIRED": "GitHub: No update required",
-        "ISSUE_UPDATE": "GitHub: Updated data for \"{{issueText}}\"",
-        "MANUAL_UPDATE_ISSUE_SUCCESS": "GitHub: Updated data for \"{{issueText}}\"",
-        "MISSING_ISSUE_DATA": "GitHub: Tasks with missing issue data found. Reloading.",
-        "NEW_COMMENT": "GitHub: New comment for \"{{issueText}}\"",
-        "POLLING": "GitHub: Polling Changes for issues",
-        "SHOW_ISSUE_BTN": "Show me"
+        "ERR_UNKNOWN": "GitHub: Unknown error {{statusCode}} {{errorMsg}}. Api Rate limit exceeded?"
       }
     },
     "GITLAB": {
@@ -203,19 +186,7 @@
         "WRITE_A_COMMENT": "Write a comment"
       },
       "S": {
-        "ERR_NETWORK": "GitLab: Request failed because of a client side network error",
-        "ERR_NOT_CONFIGURED": "GitLab: Is not properly configured",
-        "ERR_UNKNOWN": "GitLab: Unknown error {{statusCode}} {{errorMsg}}",
-        "IMPORTED_MULTIPLE_ISSUES": "GitLab: Imported {{issuesLength}} new issues from git to backlog",
-        "IMPORTED_SINGLE_ISSUE": "GitLab: Imported issue \"{{issueText}}\" from git to backlog",
-        "ISSUE_DELETED_OR_CLOSED": "GitLab: Issue \"{{issueText}}\" seems to be deleted or closed on git",
-        "ISSUE_NO_UPDATE_REQUIRED": "GitLab: No update required",
-        "ISSUE_UPDATE": "GitLab: Updated data for \"{{issueText}}\"",
-        "MANUAL_UPDATE_ISSUE_SUCCESS": "GitLab: Updated data for \"{{issueText}}\"",
-        "MISSING_ISSUE_DATA": "GitLab: Tasks with missing issue data found. Reloading.",
-        "NEW_COMMENT": "GitLab: New comment for \"{{issueText}}\"",
-        "POLLING": "GitLab: Polling Changes for issues",
-        "SHOW_ISSUE_BTN": "Show me"
+        "ERR_UNKNOWN": "GitLab: Unknown error {{statusCode}} {{errorMsg}}"
       }
     },
     "GOOGLE": {
@@ -236,6 +207,27 @@
         "ERR_NO_FILE_ID": "GoogleApi: No file id specified",
         "ERR_NO_FILE_NAME": "GoogleApi: No file name specified",
         "SUCCESS_LOGIN": "GoogleApi: Login successful"
+      }
+    },
+    "ISSUE": {
+      "DEFAULT": {
+        "ISSUES_STR": "issues",
+        "ISSUE_STR": "issue"
+      },
+      "S": {
+        "ERR_NETWORK": "{{issueProviderName}}: Request failed because of a client side network error",
+        "ERR_NOT_CONFIGURED": "{{issueProviderName}}: Not properly configured",
+        "IMPORTED_MULTIPLE_ISSUES": "{{issueProviderName}}: Imported {{nr}} new {{issuesStr}} to backlog",
+        "IMPORTED_SINGLE_ISSUE": "{{issueProviderName}}: Imported {{issueStr}} \"{{issueTitle}}\" to backlog",
+        "ISSUE_DELETED_OR_CLOSED": "{{issueProviderName}}: {{issueStrC}} \"{{issueTitle}}\" seems to be deleted or closed",
+        "ISSUE_NO_UPDATE_REQUIRED": "{{issueProviderName}}: No update required",
+        "ISSUE_UPDATE_MULTIPLE": "{{issueProviderName}}: Updated data for {{nr}} {{issuesStr}}",
+        "ISSUE_UPDATE_SINGLE": "{{issueProviderName}}: Updated data for \"{{issueTitle}}\"",
+        "MANUAL_UPDATE_ISSUE_SUCCESS": "{{issueProviderName}}: Updated data for \"{{issueTitle}}\"",
+        "MISSING_ISSUE_DATA": "{{issueProviderName}}: Tasks with missing {{issueStr}} data found. Reloading.",
+        "NEW_COMMENT": "{{issueProviderName}}: New comment for \"{{issueTitle}}\"",
+        "POLLING_BACKLOG": "{{issueProviderName}}: Polling for new {{issuesStr}}",
+        "POLLING_CHANGES": "{{issueProviderName}}: Polling Changes for {{issuesStr}}"
       }
     },
     "JIRA": {
@@ -268,6 +260,7 @@
         "CHOOSE_STATUS": "Choose status to assign",
         "CURRENT_ASSIGNEE": "Current Assignee:",
         "CURRENT_STATUS": "Current Status:",
+        "TASK_NAME": "Task name:",
         "TITLE": "Jira: Update Status",
         "UPDATE_STATUS": "Update Status"
       },
@@ -300,6 +293,7 @@
         "HOST": "Host (e.g.: http://my-host.de:1234)",
         "PASSWORD": "Token / Password",
         "USER_NAME": "Email / Username",
+        "USE_PAT": "Use Personal Access Token instead of password",
         "WONKY_COOKIE_MODE": "Wonky Cookie Fallback Authentication (desktop app only)"
       },
       "FORM_SECTION": {
@@ -339,17 +333,13 @@
       "S": {
         "ADDED_WORKLOG_FOR": "Jira: Added worklog for {{issueKey}}",
         "EXTENSION_NOT_LOADED": "Super Productivity Extension not loaded. Reloading the page might help",
-        "IMPORTED_MULTIPLE_ISSUES": "Jira: Imported {{issuesLength}} new issues from Jira to backlog",
-        "IMPORTED_SINGLE_ISSUE": "Jira: Imported issue \"{{issueText}}\" from Jira to backlog",
         "INSUFFICIENT_SETTINGS": "Insufficient Settings provided for Jira",
         "INVALID_RESPONSE": "Jira: Response contained invalid data",
         "ISSUE_NO_UPDATE_REQUIRED": "Jira: \"{{issueText}}\" already up to date",
-        "ISSUE_UPDATE": "Jira: Updated data for \"{{issueText}}\"",
         "MANUAL_UPDATE_ISSUE_SUCCESS": "Jira: Updated data for \"{{issueText}}\"",
         "MISSING_ISSUE_DATA": "Jira: Tasks with missing issue data found. Reloading.",
         "NO_AUTO_IMPORT_JQL": "Jira: No search query defined for auto import",
         "NO_VALID_TRANSITION": "Jira: No valid transition configured",
-        "POLLING": "Jira: Polling Changes for issues",
         "TIMED_OUT": "Jira: Request timed out",
         "TRANSITION": "Jira: Set issue \"{{issueKey}}\" to \"{{name}}\"",
         "TRANSITIONS_LOADED": "Jira: Transitions loaded. Use the selects below to assign them",
@@ -381,6 +371,9 @@
         "MOOD_PRODUCTIVITY_OVER_TIME": "Mood and productivity over time",
         "NO_ADDITIONAL_DATA_YET": "No additional data collected yet. Use the form on the daily summary \"Evaluation\" panel to do so.",
         "OBSTRUCTION_SELECTION_COUNT": "Number of times an obstructing factor was selected",
+        "SIMPLE_CLICK_COUNTERS_OVER_TIME": "Click Counters over time",
+        "SIMPLE_COUNTERS": "Simple Counters",
+        "SIMPLE_STOPWATCH_COUNTERS_OVER_TIME": "Stopwatch Counters over time",
         "TASKS_DONE_CREATED": "Tasks (done/created)",
         "TIME_ESTIMATED": "Time Estimated",
         "TIME_SPENT": "Time Spent"
@@ -407,22 +400,10 @@
       }
     },
     "NOTE": {
-      "ADD_REMINDER": "Add reminder",
       "D_ADD": {
-        "DATETIME_LABEL": "Datetime for reminder (optional)",
         "NOTE_LABEL": "Enter some text to save as note..."
       },
-      "D_ADD_REMINDER": {
-        "E_ENTER_TITLE": "You need to enter a title",
-        "L_DATETIME": "Datetime for reminder",
-        "L_TITLE": "Title for notification"
-      },
-      "D_VIEW_REMINDER": {
-        "SNOOZE": "Snooze",
-        "TITLE": "Note"
-      },
       "EDIT_FULLSCREEN": "Edit in fullscreen",
-      "EDIT_REMINDER": "Edit reminder",
       "NOTES_CMP": {
         "ADD_BTN": "Add new Note",
         "DROP_TO_ADD": "Drop here to add new note"
@@ -430,14 +411,55 @@
       "NOTE_CMP": {
         "DISABLE_PARSE": "Disable markdown parsing",
         "ENABLE_PARSE": "Enable markdown parse"
+      }
+    },
+    "OPEN_PROJECT": {
+      "DIALOG_INITIAL": {
+        "TITLE": "Setup OpenProject for Project"
       },
-      "REMOVE_REMINDER": "Remove reminder",
+      "DIALOG_TRACK_TIME": {
+        "ACTIVITY": "Activity",
+        "CURRENTLY_LOGGED": "Currently logged time: ",
+        "INVALID_DATE": "The entered value is not a date!",
+        "POST_TIME": "Post Time",
+        "STARTED": "Started",
+        "SUBMIT_TIME_FOR": "Submit time to OpenProject for",
+        "TIME_SPENT": "Time Spent",
+        "TITLE": "OpenProject: Submit Worklog"
+      },
+      "FORM": {
+        "FILTER_USER": "Username (e.g. to filter out changes by yourself)",
+        "HOST": "Host (e.g.: https://www.openproject.org/)",
+        "IS_AUTO_ADD_TO_BACKLOG": "Automatically add unresolved work packages from OpenProject to backlog",
+        "IS_AUTO_POLL": "Automatically poll imported OpenProject work packages for changes",
+        "IS_SEARCH_ISSUES_FROM_OPEN_PROJECT": "Show work packages as suggestions when adding new tasks",
+        "IS_SHOW_TIME_TRACKING_DIALOG": "Show time tracking dialog to report to OpenProject",
+        "IS_SHOW_TIME_TRACKING_DIALOG_FOR_EACH_SUB_TASK": "Show time tracking dialog when sub tasks are completed",
+        "IS_SHOW_TIME_TRACKING_DIALOG_DESCRIPTION": "Requires time tracking module to be enabled for OpenProject project",
+        "PROJECT_ID": "Project ID",
+        "PROJECT_ID_DESCRIPTION": "Can be found as part of the url, when viewing the project in the Browser.",
+        "TOKEN": "Access Token"
+      },
+      "FORM_SECTION": {
+        "HELP": "<p>Here you can configure SuperProductivity to list open OpenProject work packages. Please Note that for this to work in the browser you need to probably configure CORS for your OpenProject server, to allow access from app.super-productivity.com</p>",
+        "TITLE": "OpenProject"
+      },
+      "ISSUE_CONTENT": {
+        "ASSIGNEE": "Assignee",
+        "DESCRIPTION": "Description",
+        "MARK_AS_CHECKED": "Mark updates as checked",
+        "STATUS": "Status",
+        "SUMMARY": "Summary",
+        "TYPE": "Type"
+      },
+      "ISSUE_STRINGS": {
+        "ISSUES_STR": "work packages",
+        "ISSUE_STR": "work package"
+      },
       "S": {
-        "ADDED_REMINDER": "Added reminder for note",
-        "DELETED_REMINDER": "Deleted reminder for note",
-        "UPDATED_REMINDER": "Updated reminder for note"
-      },
-      "UPDATE_REMINDER": "Update reminder"
+        "ERR_UNKNOWN": "OpenProject: Unknown error {{statusCode}} {{errorMsg}}. Is CORS properly configured for the server?",
+        "POST_TIME_SUCCESS": "OpenProject: Successfully created time entry for {{issueTitle}}"
+      }
     },
     "POMODORO": {
       "BACK_TO_WORK": "Back to work!",
@@ -497,7 +519,8 @@
         "SETUP_CALDAV": "Setup Caldav Integration",
         "SETUP_GIT": "Setup GitHub Integration",
         "SETUP_GITLAB": "Setup GitLab Integration",
-        "SETUP_JIRA": "Setup Jira Integration"
+        "SETUP_JIRA": "Setup Jira Integration",
+        "SETUP_OPEN_PROJECT": "Setup OpenProject Integration"
       },
       "FORM_BASIC": {
         "L_TITLE": "Project Name",
@@ -532,8 +555,20 @@
         "UPDATED": "Updated project settings"
       }
     },
+    "QUICK_HISTORY": {
+      "NO_DATA": "No data for current year",
+      "PAGE_TITLE": "Quick History",
+      "WEEK_TITLE": "Week {{nr}} ({{timeSpent}})"
+    },
     "REMINDER": {
       "S_REMINDER_ERR": "Error for reminder interface"
+    },
+    "SEARCH_BAR": {
+      "INFO": "Click on the list icon to search for archived tasks",
+      "INFO_ARCHIVED": "Click on the archive icon to search for normal tasks",
+      "PLACEHOLDER": "Search for task or task description",
+      "PLACEHOLDER_ARCHIVED": "Search for archived tasks",
+      "TOO_MANY_RESULTS": "Too many results, please narrow your search"
     },
     "SIMPLE_COUNTER": {
       "D_CONFIRM_REMOVE": {
@@ -663,10 +698,10 @@
       "ADD_TASK_BAR": {
         "ADD_EXISTING_TASK": "Add existing task \"{{taskTitle}}\"",
         "ADD_ISSUE_TASK": "Add issue #{{issueNr}} from {{issueType}}",
-        "ADD_TASK_TO_TOP_OF_BACKLOG": "Add task to top of backlog",
-        "ADD_TASK_TO_TOP_OF_TODAY": "Add task to top of list",
         "ADD_TASK_TO_BOTTOM_OF_BACKLOG": "Add task to bottom of backlog",
         "ADD_TASK_TO_BOTTOM_OF_TODAY": "Add task to bottom of list",
+        "ADD_TASK_TO_TOP_OF_BACKLOG": "Add task to top of backlog",
+        "ADD_TASK_TO_TOP_OF_TODAY": "Add task to top of list",
         "CREATE_TASK": "Create new task",
         "EXAMPLE": "Example: \"Some task title +projectName #some tag #some other tag 10m/3h\"",
         "START": "Press enter one more time to start"
@@ -705,8 +740,8 @@
         "UPDATE_ISSUE_DATA": "Update issue data"
       },
       "D_REMINDER_ADD": {
-        "CONFIRM_REPEAT_TXT": "You're trying to schedule this repeated task to another day. Repeated tasks are usually meant to be re-created on specified days and only scheduled on that day. Do you want to proceed anyway?",
         "CONFIRM_REPEAT_OK": "Schedule",
+        "CONFIRM_REPEAT_TXT": "You're trying to schedule this repeated task to another day. Repeated tasks are usually meant to be re-created on specified days and only scheduled on that day. Do you want to proceed anyway?",
         "DATETIME_FOR": "Datetime for reminder",
         "EDIT": "Edit Reminder",
         "MOVE_TO_BACKLOG": "Move task to backlog until scheduled",
@@ -795,9 +830,9 @@
         "FRIDAY": "Friday",
         "IS_ADD_TO_BOTTOM": "Move task to bottom of list",
         "MONDAY": "Monday",
-        "SATURDAY": "Saturday",
         "REMIND_AT": "Remind at",
         "REMIND_AT_PLACEHOLDER": "Select when to remind",
+        "SATURDAY": "Saturday",
         "START_TIME": "Scheduled start time",
         "START_TIME_DESCRIPTION": "E.g. 15:00. Leave blank for an all day task",
         "SUNDAY": "Sunday",
@@ -833,6 +868,11 @@
         "BREAK": "Break",
         "CREATE_AND_TRACK": "<em>Create</em> and track to",
         "IDLE_FOR": "You have been idle for:",
+        "SIMPLE_CONFIRM_COUNTER_CANCEL": "Skip",
+        "SIMPLE_CONFIRM_COUNTER_OK": "Track",
+        "SIMPLE_COUNTER_CONFIRM_TXT": "You selected skip, but activated {{nr}} simple counter button(s). Do you want to track the idle time to them?",
+        "SIMPLE_COUNTER_TOOLTIP": "Click to track to {{title}}",
+        "SIMPLE_COUNTER_TOOLTIP_DISABLE": "Click to NOT track to {{title}}",
         "SKIP": "Skip",
         "TASK": "Task",
         "TASK_BREAK": "Task+Break",
@@ -845,11 +885,6 @@
         "TRACK_TO": "Track to:",
         "UNTRACKED_TIME": "Untracked time:"
       }
-    },
-    "QUICK_HISTORY": {
-      "NO_DATA": "No data for current year",
-      "PAGE_TITLE": "Quick History",
-      "WEEK_TITLE": "Week {{nr}} ({{timeSpent}})"
     },
     "WORKLOG": {
       "CMP": {
@@ -906,13 +941,6 @@
         "NO_DATA": "No tasks this week yet.",
         "TITLE": "Title"
       }
-    },
-    "SEARCH_BAR": {
-      "TOO_MANY_RESULTS": "Too many results, please narrow your search",
-      "PLACEHOLDER": "Search for task or task description",
-      "PLACEHOLDER_ARCHIVED": "Search for archived tasks",
-      "INFO": "Click on the list icon to search for archived tasks",
-      "INFO_ARCHIVED": "Click on the archive icon to search for normal tasks"
     }
   },
   "FILE_IMEX": {
@@ -986,7 +1014,6 @@
       "GO_TO_TIMELINE": "Go to Timeline",
       "GO_TO_WORK_VIEW": "Go to Work View",
       "HELP": "<p>Here you can configure all keyboard shortcuts.</p> <p>Click on the text input and enter the desired keyboard combination. Hit enter to save and Escape to abort.</p> <p>There are three types of shortcuts:</p> <ul> <li> <strong>Global shortcuts:</strong> When the app is running it will trigger the action from every other application. </li> <li> <strong>Application level shortcuts:</strong> Will trigger from every screen of the application, but not if you're currently editing a text field. </li> <li> <strong>Task level shortcuts:</strong> They will only trigger if you have selected a task via mouse or keyboard and usually trigger an action specifically related to that one task. </li> </ul><p>You can <strong>press Escape to remove a shortcut.</strong>",
-      "SHOW_SEARCH_BAR": "Show search bar",
       "MOVE_TASK_DOWN": "Move Task down in List",
       "MOVE_TASK_UP": "Move Task up in List",
       "MOVE_TO_BACKLOG": "Move Task to Task Backlog",
@@ -994,6 +1021,7 @@
       "OPEN_PROJECT_NOTES": "Show/Hide Project Notes",
       "SELECT_NEXT_TASK": "Select next Task",
       "SELECT_PREVIOUS_TASK": "Select previous Task",
+      "SHOW_SEARCH_BAR": "Show search bar",
       "SYSTEM_SHORTCUTS": "Global Shortcuts (system wide)",
       "TASK_ADD_SUB_TASK": "Add sub Task",
       "TASK_DELETE": "Delete Task",
@@ -1081,9 +1109,9 @@
       "IS_FOCUS_WINDOW": "Focus app window when reminder is active (desktop only)",
       "IS_LOCK_SCREEN": "Lock screen when a break is due (desktop only)",
       "MESSAGE": "Take a break message",
-      "SNOOZE_TIME": "Snooze time when prompted to take a break",
       "MIN_WORKING_TIME": "Trigger take a break notification after X working without one",
       "MOTIVATIONAL_IMG": "Motivational image (web url)",
+      "SNOOZE_TIME": "Snooze time when prompted to take a break",
       "TITLE": "Break Reminder"
     },
     "TIMELINE": {
@@ -1140,17 +1168,18 @@
     "PROJECTS": "Projects",
     "PROJECT_MENU": "Project Menu",
     "PROJECT_SETTINGS": "Project Settings",
+    "QUICK_HISTORY": "Quick History",
     "SCHEDULED": "Scheduled",
     "SETTINGS": "Settings",
+    "SHOW_SEARCH_BAR": "Show Search Bar",
     "TAGS": "Tags",
     "TASKS": "Tasks",
     "TASK_LIST": "Task List",
     "TOGGLE_SHOW_BOOKMARKS": "Show/Hide Bookmarks",
     "TOGGLE_SHOW_NOTES": "Show/Hide Project Notes",
     "TOGGLE_TRACK_TIME": "Start/Stop tracking time",
-    "WORKLOG": "Worklog",
-    "QUICK_HISTORY": "Quick History",
-    "SHOW_SEARCH_BAR": "Show Search Bar"
+    "TRIGGER_SYNC": "Trigger sync manually",
+    "WORKLOG": "Worklog"
   },
   "PDS": {
     "BACK": "Wait I forgot something!",
@@ -1162,8 +1191,8 @@
       "MSG": "Your work is done. Time to go home!",
       "OK": "Aye aye! Shutdown!"
     },
-    "EVALUATION": "Evaluation",
     "ESTIMATE_TOTAL": "Total estimate:",
+    "EVALUATION": "Evaluation",
     "EXPORT_TASK_LIST": "Export Task List",
     "NO_TASKS": "There are no tasks for this day",
     "PLAN": "Plan",
@@ -1212,6 +1241,7 @@
     "GITLAB_CONFIGURED": "GitLab Integration Configured",
     "IMPORT_FROM_FILE": "Import from file",
     "JIRA_CONFIGURED": "Jira Integration Configured",
+    "OPEN_PROJECT_CONFIGURED": "OpenProject Integration Configured",
     "S_INVALID_JSON": "Invalid json for project file",
     "TITLE": "Project Overview",
     "UN_ARCHIVE_PROJECT": "Unarchive Project"

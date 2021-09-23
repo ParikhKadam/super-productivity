@@ -37,8 +37,9 @@
 
   <div class="box"></div>
 
-  <!-- TODO only bind pan etc when touch is available-->
+  <!-- TODO only bind pan, longPress etc when touch is available-->
   <div
+    (longPressIOS)="openContextMenu($event)"
     (contextmenu)="openContextMenu($event)"
     (panend)="onPanEnd()"
     (panleft)="onPanLeft($event)"
@@ -330,7 +331,7 @@
             </a>
 
             <button (click)="updateIssueData()" *ngIf="task.issueId" mat-menu-item>
-              <mat-icon>cloud_download</mat-icon>
+              <mat-icon [svgIcon]="task.issueType|issueIcon"></mat-icon>
               {{T.F.TASK.CMP.UPDATE_ISSUE_DATA|translate}}
             </button>
 

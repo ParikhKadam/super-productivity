@@ -14,6 +14,11 @@ import {
 } from '../obstruction/store/obstruction.reducer';
 import { ObstructionState } from '../obstruction/obstruction.model';
 import { unique } from '../../../util/unique';
+import { selectAllSimpleCounters } from '../../simple-counter/store/simple-counter.reducer';
+import {
+  SimpleCounter,
+  SimpleCounterType,
+} from '../../simple-counter/simple-counter.model';
 
 export const selectMetricFeatureState =
   createFeatureSelector<MetricState>(METRIC_FEATURE_NAME);
@@ -204,8 +209,8 @@ export const selectProductivityHappinessLineChartDataComplete = createSelector(
     sorted.forEach((id) => {
       const metric = state.entities[id] as Metric;
       v.labels.push(metric.id);
-      v.data[0].data.push(metric.mood);
-      v.data[1].data.push(metric.productivity);
+      v.data[0].data.push(metric.mood ? metric.mood - 5 : undefined);
+      v.data[1].data.push(metric.productivity ? metric.productivity - 5 : undefined);
     });
     return v;
   },
@@ -222,5 +227,65 @@ export const selectProductivityHappinessLineChartData = createSelector(
         { data: (chart.data[1] as any).data.slice(f), label: chart.data[1].label },
       ],
     };
+  },
+);
+
+export const selectSimpleCounterClickCounterLineChartData = createSelector(
+  selectAllSimpleCounters,
+  (simpleCounterItems: SimpleCounter[], props: { howMany: number }): LineChartData => {
+    const f = -1 * props.howMany;
+    const chart: LineChartData = {
+      labels: [],
+      data: [],
+    };
+    const stopwatchItems = simpleCounterItems.filter(
+      (item) => item.type === SimpleCounterType.ClickCounter,
+    );
+    let allDays: string[] = [];
+    stopwatchItems.forEach((item, i) => {
+      allDays = allDays.concat(Object.keys(item.countOnDay));
+    });
+    const allDaysSorted = sortWorklogDates(unique(allDays)).slice(f);
+    chart.labels = allDaysSorted;
+
+    stopwatchItems.forEach((item, j) => {
+      chart.data[j] = { data: [], label: item.title };
+      allDaysSorted.forEach((day) => {
+        const valueForDay = item.countOnDay[day];
+        (chart as any).data[j].data.push(valueForDay ? valueForDay : undefined);
+      });
+    });
+    return chart;
+  },
+);
+
+export const selectSimpleCounterStopWatchLineChartData = createSelector(
+  selectAllSimpleCounters,
+  (simpleCounterItems: SimpleCounter[], props: { howMany: number }): LineChartData => {
+    const f = -1 * props.howMany;
+    const chart: LineChartData = {
+      labels: [],
+      data: [],
+    };
+    const stopwatchItems = simpleCounterItems.filter(
+      (item) => item.type === SimpleCounterType.StopWatch,
+    );
+    let allDays: string[] = [];
+    stopwatchItems.forEach((item, i) => {
+      allDays = allDays.concat(Object.keys(item.countOnDay));
+    });
+    const allDaysSorted = sortWorklogDates(unique(allDays)).slice(f);
+    chart.labels = allDaysSorted;
+
+    stopwatchItems.forEach((item, j) => {
+      chart.data[j] = { data: [], label: item.title };
+      allDaysSorted.forEach((day) => {
+        const valueForDay = item.countOnDay[day];
+        (chart as any).data[j].data.push(
+          valueForDay ? Math.round(valueForDay / 60000) : undefined,
+        );
+      });
+    });
+    return chart;
   },
 );

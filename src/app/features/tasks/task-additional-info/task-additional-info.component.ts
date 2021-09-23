@@ -18,7 +18,15 @@ import {
 } from '../task.model';
 import { IssueService } from '../../issue/issue.service';
 import { TaskAttachmentService } from '../task-attachment/task-attachment.service';
-import { BehaviorSubject, merge, Observable, of, Subject, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  merge,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject,
+} from 'rxjs';
 import {
   TaskAttachment,
   TaskAttachmentCopy,
@@ -30,6 +38,7 @@ import {
   map,
   shareReplay,
   switchMap,
+  takeUntil,
   withLatestFrom,
 } from 'rxjs/operators';
 import { T } from '../../../t.const';
@@ -67,10 +76,16 @@ import { devError } from '../../../util/dev-error';
 import { SS_JIRA_WONKY_COOKIE } from '../../../core/persistence/ls-keys.const';
 import { IS_MOBILE } from '../../../util/is-mobile';
 import { GlobalConfigService } from '../../config/global-config.service';
+import { shareReplayUntil } from '../../../util/share-replay-until';
 
 interface IssueAndType {
   id: string | number | null;
   type: IssueProviderKey | null;
+}
+
+interface IssueDataAndType {
+  issueData: IssueData | null;
+  issueType: IssueProviderKey | null;
 }
 
 @Component({
@@ -95,6 +110,8 @@ export class TaskAdditionalInfoComponent implements AfterViewInit, OnDestroy {
   @ViewChild('attachmentPanelElRef')
   attachmentPanelElRef?: TaskAdditionalInfoItemComponent;
 
+  _onDestroy$ = new Subject<void>();
+
   IS_TOUCH_ONLY: boolean = IS_TOUCH_ONLY;
   ShowSubTasksMode: typeof ShowSubTasksMode = ShowSubTasksMode;
   selectedItemIndex: number = 0;
@@ -108,18 +125,6 @@ export class TaskAdditionalInfoComponent implements AfterViewInit, OnDestroy {
     switchMap((id) => (id ? this._reminderService.getById$(id) : of(null))),
   );
 
-  issueIdAndType$: Subject<IssueAndType> = new Subject();
-  issueIdAndTypeShared$: Observable<IssueAndType> = this.issueIdAndType$.pipe(
-    shareReplay(1),
-  );
-
-  issueDataNullTrigger$: Subject<IssueAndType | null> = new Subject();
-
-  issueDataTrigger$: Observable<IssueAndType | null> = merge(
-    this.issueIdAndTypeShared$,
-    this.issueDataNullTrigger$,
-  );
-  issueData?: IssueData | null | false;
   repeatCfgId$: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   repeatCfgDays$: Observable<string | null> = this.repeatCfgId$.pipe(
     switchMap((id) =>
@@ -158,30 +163,70 @@ export class TaskAdditionalInfoComponent implements AfterViewInit, OnDestroy {
 
   // NOTE: should be treated as private
   _taskData?: TaskWithSubTasks;
-  issueData$: Observable<IssueData | null | false> = this.issueDataTrigger$.pipe(
-    switchMap((args) => {
-      if (args && args.id && args.type) {
-        if (!this._taskData || !this._taskData.projectId) {
-          throw new Error('task data not ready');
-        }
-        return this._issueService
-          .getById$(args.type, args.id, this._taskData.projectId)
-          .pipe(
-            // NOTE we need this, otherwise the error is going to weird up the observable
-            catchError(() => {
-              return of(false);
-            }),
-          ) as Observable<false | IssueData>;
-      }
-      return of(null);
-    }),
-    shareReplay(1),
-    // NOTE: this seems to fix the issue loading bug, when we end up with the
-    // expandable closed when the data is loaded
-    delay(0),
+
+  issueIdAndType$: Subject<IssueAndType> = new ReplaySubject(1);
+  loadedIssueType$: Subject<IssueProviderKey | null> = new ReplaySubject(1);
+  issueDataNullTrigger$: Subject<IssueAndType | null> = new Subject();
+
+  issueDataTrigger$: Observable<IssueAndType | null> = merge(
+    this.issueIdAndType$,
+    this.issueDataNullTrigger$,
   );
+  issueData?: IssueData | null | false;
+
+  // NOTE: null means is loading, false means just don't show
+  issueDataAndType$: Observable<IssueDataAndType | null | false> =
+    this.issueDataTrigger$.pipe(
+      switchMap((args) => {
+        if (args && args.id && args.type) {
+          if (!this._taskData || !this._taskData.projectId) {
+            throw new Error('task data not ready');
+          }
+          return this._issueService
+            .getById$(args.type, args.id, this._taskData.projectId)
+            .pipe(
+              // NOTE we need this, otherwise the error is going to weird up the observable
+              catchError(() => {
+                return of(false);
+              }),
+              map((issueDataIfGiven) =>
+                issueDataIfGiven
+                  ? { issueData: issueDataIfGiven, issueType: args.type }
+                  : issueDataIfGiven,
+              ),
+            ) as Observable<false | IssueDataAndType>;
+        }
+        return of(null);
+      }),
+      shareReplayUntil(this._onDestroy$, 1),
+      // NOTE: this seems to fix the issue loading bug, when we end up with the
+      // expandable closed when the data is loaded
+      delay(0),
+    );
+
+  issueData$: Observable<IssueData | null | false> = this.issueDataAndType$.pipe(
+    map((issueDataAndType) =>
+      issueDataAndType ? issueDataAndType.issueData : issueDataAndType,
+    ),
+    shareReplay(1),
+  );
+
+  isIssueDataLoadedForCurrentType$: Observable<boolean> = combineLatest([
+    this.issueDataAndType$,
+    this.issueDataTrigger$,
+  ]).pipe(
+    map(
+      ([issueDataAndType, issueDataTrigger]): boolean =>
+        !!(
+          issueDataAndType &&
+          issueDataTrigger &&
+          issueDataAndType.issueType === issueDataTrigger.type
+        ),
+    ),
+  );
+
   issueAttachments$: Observable<TaskAttachmentCopy[]> = this.issueData$.pipe(
-    withLatestFrom(this.issueIdAndTypeShared$),
+    withLatestFrom(this.issueIdAndType$),
     map(([data, { type }]) =>
       data && type ? this._issueService.getMappedAttachments(type, data) : [],
     ),
@@ -190,7 +235,6 @@ export class TaskAdditionalInfoComponent implements AfterViewInit, OnDestroy {
   defaultTaskNotes: string = '';
 
   private _focusTimeout?: number;
-  private _subs: Subscription = new Subscription();
   private _dragEnterTarget?: HTMLElement;
 
   constructor(
@@ -208,51 +252,47 @@ export class TaskAdditionalInfoComponent implements AfterViewInit, OnDestroy {
     private _cd: ChangeDetectorRef,
   ) {
     // NOTE: needs to be assigned here before any setter is called
-    this._subs.add(
-      this.issueAttachments$.subscribe(
-        (attachments) => (this.issueAttachments = attachments),
-      ),
-    );
-    this._subs.add(
-      this._globalConfigService.misc$.subscribe(
-        (misc) => (this.defaultTaskNotes = misc.taskNotesTpl),
-      ),
-    );
-    this._subs.add(
-      this.issueData$.subscribe((issueData) => {
-        this.issueData = issueData;
-        this._cd.detectChanges();
-      }),
-    );
+    this.issueAttachments$
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe((attachments) => (this.issueAttachments = attachments));
+
+    this._globalConfigService.misc$
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe((misc) => (this.defaultTaskNotes = misc.taskNotesTpl));
+
+    this.issueData$.pipe(takeUntil(this._onDestroy$)).subscribe((issueData) => {
+      this.issueData = issueData;
+      this._cd.detectChanges();
+    });
 
     // NOTE: this works as long as there is no other place to display issue attachments for jira
     if (IS_ELECTRON) {
-      this._subs.add(
-        this.issueIdAndTypeShared$
-          .pipe(
-            filter(({ id, type }) => type === JIRA_TYPE),
-            // not strictly reactive reactive but should work a 100% as issueIdAndType are triggered after task data
-            switchMap(() => {
-              if (!this._taskData || !this._taskData.projectId) {
-                throw new Error('task data not ready');
-              }
-              return this._projectService.getJiraCfgForProject$(this._taskData.projectId);
-            }),
-          )
-          .subscribe((jiraCfg) => {
-            if (jiraCfg.isEnabled) {
-              (this._electronService.ipcRenderer as typeof ipcRenderer).send(
-                IPC.JIRA_SETUP_IMG_HEADERS,
-                {
-                  jiraCfg,
-                  wonkyCookie:
-                    jiraCfg.isWonkyCookieMode &&
-                    sessionStorage.getItem(SS_JIRA_WONKY_COOKIE),
-                },
-              );
+      this.issueIdAndType$
+        .pipe(
+          takeUntil(this._onDestroy$),
+          filter(({ id, type }) => type === JIRA_TYPE),
+          // not strictly reactive reactive but should work a 100% as issueIdAndType are triggered after task data
+          switchMap(() => {
+            if (!this._taskData || !this._taskData.projectId) {
+              throw new Error('task data not ready');
             }
+            return this._projectService.getJiraCfgForProject$(this._taskData.projectId);
           }),
-      );
+          takeUntil(this._onDestroy$),
+        )
+        .subscribe((jiraCfg) => {
+          if (jiraCfg.isEnabled) {
+            (this._electronService.ipcRenderer as typeof ipcRenderer).send(
+              IPC.JIRA_SETUP_IMG_HEADERS,
+              {
+                jiraCfg,
+                wonkyCookie:
+                  jiraCfg.isWonkyCookieMode &&
+                  sessionStorage.getItem(SS_JIRA_WONKY_COOKIE),
+              },
+            );
+          }
+        });
     }
     // this.issueIdAndType$.subscribe((v) => console.log('issueIdAndType$', v));
     // this.issueDataTrigger$.subscribe((v) => console.log('issueDataTrigger$', v));
@@ -279,6 +319,7 @@ export class TaskAdditionalInfoComponent implements AfterViewInit, OnDestroy {
       (newVal.issueWasUpdated === true && !prev.issueWasUpdated)
     ) {
       this.issueDataNullTrigger$.next(null);
+
       this.issueIdAndType$.next({
         id: newVal.issueId,
         type: newVal.issueType,
@@ -332,38 +373,40 @@ export class TaskAdditionalInfoComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this._subs.add(
-      this.taskService.taskAdditionalInfoTargetPanel$
-        .pipe(
-          // hacky but we need a minimal delay to make sure selectedTaskId is ready
-          delay(50),
-          withLatestFrom(this.taskService.selectedTaskId$),
-          filter(([, id]) => !!id),
-          // delay(100),
-        )
-        .subscribe(([v]) => {
-          if (v === TaskAdditionalInfoTargetPanel.Attachments) {
-            if (!this.attachmentPanelElRef) {
-              devError('this.attachmentPanelElRef not ready');
-              this._focusFirst();
-            } else {
-              this.focusItem(this.attachmentPanelElRef);
-            }
-          } else {
+    this.taskService.taskAdditionalInfoTargetPanel$
+      .pipe(
+        takeUntil(this._onDestroy$),
+        // hacky but we need a minimal delay to make sure selectedTaskId is ready
+        delay(50),
+        withLatestFrom(this.taskService.selectedTaskId$),
+        filter(([, id]) => !!id),
+        // delay(100),
+      )
+      .subscribe(([v]) => {
+        if (v === TaskAdditionalInfoTargetPanel.Attachments) {
+          if (!this.attachmentPanelElRef) {
+            devError('this.attachmentPanelElRef not ready');
             this._focusFirst();
+          } else {
+            this.focusItem(this.attachmentPanelElRef);
           }
-        }),
-    );
+        } else {
+          this._focusFirst();
+        }
+      });
   }
 
   ngOnDestroy(): void {
+    this._onDestroy$.next();
+    this._onDestroy$.complete();
     window.clearTimeout(this._focusTimeout);
   }
 
   changeTaskNotes($event: string): void {
     if (
       !this.defaultTaskNotes ||
-      ($event && $event.trim() !== this.defaultTaskNotes.trim())
+      !$event ||
+      $event.trim() !== this.defaultTaskNotes.trim()
     ) {
       this.taskService.update(this.task.id, { notes: $event });
     }

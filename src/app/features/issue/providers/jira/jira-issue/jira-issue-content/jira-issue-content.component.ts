@@ -7,9 +7,10 @@ import { T } from '../../../../../../t.const';
 import { TaskService } from '../../../../../tasks/task.service';
 // @ts-ignore
 import * as j2m from 'jira2md';
-import { JiraCommonInterfacesService } from '../../jira-common-interfaces.service';
 import { Observable, ReplaySubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { JiraCommonInterfacesService } from '../../jira-common-interfaces.service';
+import { devError } from '../../../../../../util/dev-error';
 
 @Component({
   selector: 'jira-issue-content',
@@ -41,7 +42,13 @@ export class JiraIssueContentComponent {
 
   @Input('issue') set issueIn(i: JiraIssue) {
     this.issue = i;
-    this.description = i && i.description && j2m.to_markdown(i.description);
+    try {
+      this.description = i && i.description && j2m.to_markdown(i.description);
+    } catch (e) {
+      console.log(i);
+      devError(e);
+      this.description = (i && i.description) || undefined;
+    }
   }
 
   @Input('task') set taskIn(v: TaskWithSubTasks) {
@@ -52,6 +59,9 @@ export class JiraIssueContentComponent {
   hideUpdates(): void {
     if (!this.task) {
       throw new Error('No task');
+    }
+    if (!this.issue) {
+      throw new Error('No issue');
     }
     this._taskService.markIssueUpdatesAsRead(this.task.id);
   }

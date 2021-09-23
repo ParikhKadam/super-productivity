@@ -28,6 +28,7 @@ export const selectSimpleCounterFeatureState = createFeatureSelector<SimpleCount
 );
 export const { selectIds, selectEntities, selectAll, selectTotal } =
   adapter.getSelectors();
+
 export const selectAllSimpleCounters = createSelector(
   selectSimpleCounterFeatureState,
   selectAll,
@@ -35,6 +36,27 @@ export const selectAllSimpleCounters = createSelector(
 export const selectSimpleCounterById = createSelector(
   selectSimpleCounterFeatureState,
   (state: SimpleCounterState, props: { id: string }) => state.entities[props.id],
+);
+
+export const selectHasSimpleCounterData = createSelector(
+  selectSimpleCounterFeatureState,
+  (state: SimpleCounterState): boolean => state.ids.length > 0,
+);
+
+export const selectEnabledSimpleCounters = createSelector(
+  selectAllSimpleCounters,
+  (items): SimpleCounter[] => items.filter((item) => item.isEnabled),
+);
+
+export const selectEnabledAndToggledSimpleCounters = createSelector(
+  selectAllSimpleCounters,
+  (items) => items && items.filter((item) => item.isEnabled && item.isOn),
+);
+
+export const selectEnabledSimpleStopWatchCounters = createSelector(
+  selectEnabledSimpleCounters,
+  (items): SimpleCounter[] =>
+    items.filter((item) => item.type === SimpleCounterType.StopWatch),
 );
 
 export const initialSimpleCounterState: SimpleCounterState =

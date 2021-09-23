@@ -1,0 +1,35 @@
+@import '../../../../variables';
+
+.dialog-content {
+  p,
+  .track-to-label,
+  .simple-counter-section,
+  .time {
+    text-align: center;
+  }
+}
+
+.time {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: $s;
+}
+
+.track-to-label {
+  padding-top: $s * 3;
+  margin: $s * 3 $s * -3 $s;
+  font-size: 22px;
+  border-top: 1px solid $dark-theme-extra-border-color;
+
+  @include lightTheme() {
+    border-color: $light-theme-extra-border-color;
+  }
+}
+
+.simple-counter-section {
+}
+
+.simple-counter {
+  margin: 0 $s * 0.5;
+  box-shadow: none !important;
+}

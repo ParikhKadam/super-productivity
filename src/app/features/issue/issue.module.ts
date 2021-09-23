@@ -7,6 +7,10 @@ import { GithubIssueModule } from './providers/github/github-issue/github-issue.
 import { IssueIconPipe } from './issue-icon/issue-icon.pipe';
 import { GitlabIssueModule } from './providers/gitlab/gitlab-issue/gitlab-issue.module';
 import { CaldavIssueModule } from './providers/caldav/caldav-issue/caldav-issue.module';
+import { OpenProjectIssueModule } from './providers/open-project/open-project-issue/open-project-issue.module';
+import { EffectsModule } from '@ngrx/effects';
+import { PollToBacklogEffects } from './store/poll-to-backlog.effects';
+import { PollIssueUpdatesEffects } from './store/poll-issue-updates.effects';
 
 @NgModule({
   imports: [
@@ -15,6 +19,8 @@ import { CaldavIssueModule } from './providers/caldav/caldav-issue/caldav-issue.
     GithubIssueModule,
     GitlabIssueModule,
     CaldavIssueModule,
+    OpenProjectIssueModule,
+    EffectsModule.forFeature([PollToBacklogEffects, PollIssueUpdatesEffects]),
   ],
   declarations: [IssueHeaderComponent, IssueContentComponent, IssueIconPipe],
   exports: [IssueHeaderComponent, IssueContentComponent, IssueIconPipe],

@@ -60,7 +60,7 @@ Organize your daily tasks in one place while making time tracking a lot less ann
 ## :heavy_check_mark: Features
 
 - **Plan, track & summarize**. Create time sheets and work summaries in a breeze to easily export them to your company's time tracking system.
-- Integrate with **Jira**, **GitHub** and **GitLab**. Auto import tasks assigned to you, plan the details locally, automatically create worklogs and get notified right away, when something changes.
+- Integrate with **Jira**, **GitHub**, **GitLab** and **OpenProject**. Auto import tasks assigned to you, plan the details locally, automatically create worklogs and get notified right away, when something changes.
 - Organize your project's data. Create **notes**, attach **files** or create **bookmarks** for links, files and even commands and have it all out of the way, once you're ready for the weekend.
 - Helps you to **establish healthy habits**. A break timer reminds to you, when it's time to step away. You also can collect personal metrics for yourself to see, which of your work routines need adjustments.
 - Stuck and procrastinating? No problem! Super Productivity's **anti procrastination** feature helps you to reconsider your options and a **pomodoro timer** is also always at hand.
@@ -151,7 +151,7 @@ There are several ways to help.
 
 3. **[Report bugs](https://github.com/johannesjo/super-productivity/issues/new)**
 
-4. **Contribute**: You don't have to be programmer to help. Some of the icons really need improvement and many of the translations could use some love.
+4. **Contribute**: You don't have to be programmer to help. Some of the icons really need improvement and many of the [translations could use some love](https://github.com/johannesjo/super-productivity/discussions/1493).
 
 5. **[Sponsor the project](https://github.com/sponsors/johannesjo)**
 
@@ -222,7 +222,7 @@ For the desktop version automatic backups are stored per default in the `backup`
 
 Where user data is stored differs from os to os. The most common locations are:
 Mac OS: `~/Library/Application Support/superProductivity/`
-Windows: `C:\Users\<YOUR_USER_NAME>\AppData\Local\superProductivity/`
+Windows: `C:\Users\<YOUR_USER_NAME>\AppData\Roaming\superProductivity/` or `%APPDATA%\superProductivity`
 Linux: `~/.config/superProductivity/`
 
 The path should be shown when you go to the "Automatic Backups` section on the configuration page (minus the "backup" sub folder). You can also see it printed out when you start the app from the command line.
