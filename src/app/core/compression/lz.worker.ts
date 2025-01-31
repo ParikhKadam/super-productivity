@@ -1,12 +1,8 @@
 /// <reference lib="webworker" />
-import * as LZString from 'lz-string';
+import LZString from 'lz-string';
 
 const handleData = (msgData: any): string | null => {
   switch (msgData.type) {
-    case 'COMPRESS':
-      return LZString.compress(msgData.strToHandle);
-    case 'DECOMPRESS':
-      return LZString.decompress(msgData.strToHandle);
     case 'COMPRESS_UTF16':
       // eslint-disable-next-line
       return LZString['compressToUTF16'](msgData.strToHandle);

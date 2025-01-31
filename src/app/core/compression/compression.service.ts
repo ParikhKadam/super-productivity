@@ -1,14 +1,16 @@
 import { nanoid } from 'nanoid';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SnackService } from '../snack/snack.service';
 import { T } from '../../t.const';
 
 @Injectable({ providedIn: 'root' })
 export class CompressionService {
+  private readonly _snackService = inject(SnackService);
+
   private _w: Worker;
   private _activeInstances: any = {};
 
-  constructor(private readonly _snackService: SnackService) {
+  constructor() {
     if (typeof (Worker as any) === 'undefined') {
       throw new Error('No web worker support');
     }
@@ -19,20 +21,6 @@ export class CompressionService {
     });
     this._w.addEventListener('message', this._onData.bind(this));
     this._w.addEventListener('error', this._handleError.bind(this));
-  }
-
-  async compress(strToHandle: string): Promise<string> {
-    return this._promisifyWorker({
-      type: 'COMPRESS',
-      strToHandle,
-    });
-  }
-
-  async decompress(strToHandle: string): Promise<string> {
-    return this._promisifyWorker({
-      type: 'DECOMPRESS',
-      strToHandle,
-    });
   }
 
   async compressUTF16(strToHandle: string): Promise<string> {
